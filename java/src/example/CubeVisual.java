@@ -1,14 +1,16 @@
 package example;
 
 import ie.tudublin.Visual;
+import processing.core.PShape;
 
 public class CubeVisual extends Visual
 {
-    boolean twocubes = false;
+    boolean twocubes = true;
+    PShape ducky;
 
     public void settings()
     {
-        size(800, 800, P3D);
+        size(Get_Window_Width(), Get_Window_Height(), P3D);
         println("CWD: " + System.getProperty("user.dir"));
         //fullScreen(P3D, SPAN);
     }
@@ -30,12 +32,14 @@ public class CubeVisual extends Visual
 
     public void setup()
     {
-        colorMode(HSB);
+        colorMode(RGB);
         
         setFrameSize(256);
 
+        ducky = loadShape("Shapes/Rubber_Ducky.obj" );
+          
         startMinim();
-        loadAudio("Music/Death Grips - Beware.mp3");          // MP3 is OK
+        loadAudio(Get_Song_Path());          // MP3 is OK
         //loadAudio("Music/TEST FLAC - Chop Suey.flac");        // FLACs cant be played
         //loadAudio("Music/TEST OGG - Death Grips Hacker.ogg"); // OGGs cant be played
         //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK
@@ -47,48 +51,107 @@ public class CubeVisual extends Visual
     }
 
     float smoothedBoxSize = 0;
+    boolean increment = true; // Delete later
 
-    public void draw()
+    public void draw()  // Called every Frame
     {
         calculateAverageAmplitude();
-        background(0);
+        background(20);
         noFill();
         lights();
-        stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
-        camera(0, 0, 0, 0, 0, -1, 0, 1, 0);
-        translate(0, 0, -250);
+        //stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
+        perspective(
+            1.5f, // field-of-view angle (in radians)
+            (Get_Window_Width() / Get_Window_Height()), // aspect - ratio of width to height... Need to figure out how to update this when going fullscreen
+            1, // Near-Clip plane (Keep low)
+            10000 // Far-Clip plane (Keep High)
+            );
+        camera
+            ( 
+                0,      // x-coordinate for the eye 
+                0,      // y-coordinate for the eye
+                0,      // z-coordinate for the eye
+                0,      // x-coordinate for the center of the scene
+                0,      // y-coordinate for the center of the scene
+                1,     // z-coordinate for the center of the scene
+                0,      // upX - usually 0.0, 1.0, or -1.0
+                -1,      // upY - usually 0.0, 1.0, or -1.0
+                0      // upZ - usually 0.0, 1.0, or -1.0
+            );
+        
+        translate(0, 0, 250);
                
-        float boxSize = 50 + (getAmplitude() * 300);//map(average, 0, 1, 100, 400); 
+        float boxSize = 50 + (getAmplitude() * Get_Window_Width() / 5); //map(average, 0, 1, 100, 400); 
         smoothedBoxSize = lerp(smoothedBoxSize, boxSize, 0.2f);        
         if (twocubes)
         {
+            // Box 1 X (going left and right)
             pushMatrix();
-            translate(-100, 0, 0);
-            rotateY(angle);
+            translate((Tick_Tock * 100), -10, 0);
             rotateX(angle);
-            box(smoothedBoxSize);
-            //strokeWeight(1);
-            //sphere(smoothedBoxSize);
-            popMatrix();
-            pushMatrix();
-            translate(100, 0, 0);
-            rotateY(angle);
-            rotateX(angle);
+            fill(255,0,0);
+            stroke(222,50,50); // Red
             strokeWeight(5); 
             box(smoothedBoxSize);
+            popMatrix();
+            
+            // Box 2 Y (Going up and down)
+            pushMatrix();
+            translate(0, ((Tick_Tock/2) * 100), 0);
+            rotateY(angle/3);
+            fill(0,255,0);
+            stroke(50,222,50); // Green
+            strokeWeight(5); 
+            box(smoothedBoxSize);
+            popMatrix();
+            
+            // Box 3 Z (going back and forth)
+            pushMatrix();
+            translate(100, -50, (Tick_Tock * -100));
+            rotateZ(angle);
+            fill(50,50,222);
+            stroke(0,0,255); // Blue
+            strokeWeight(5); 
+            box(smoothedBoxSize);
+            popMatrix();
+            
+            // Custom Shape (Duck)
+            pushMatrix();
+            translate(0,-2000, 5000);
+            scale(150);
+            rotateY(angle); 
+            
+            shape(ducky);
+            
             popMatrix();
         }
         else
         {
-            rotateY(angle);
-            rotateX(angle);
+            //rotateY(angle);
+            //rotateX(angle);
+            rotateZ(angle);
             //strokeWeight(1);
             //sphere(smoothedBoxSize/ 2);            
-            strokeWeight(5);
+            strokeWeight( (Get_Window_Width() / 100) ); // If we have a small window, We want a small Stroke
             
             box(smoothedBoxSize);
         }
+        
+        
+        if (Tick_Tock > 1)
+        {   increment = false;  }
+        else if (Tick_Tock < -1 ) 
+        {   increment = true;   }
+
+        if (increment)
+        { Tick_Tock += 0.01f;}
+        else
+        { Tick_Tock -= 0.01f;}
+        
         angle += 0.01f;
+        
     }
+
     float angle = 0;
+    float Tick_Tock = 0;
 } 

@@ -9,6 +9,10 @@ public abstract class Visual extends PApplet
 	private int frameSize = 512;
 	private int sampleRate = 44100;
 
+	private String song_path = "Music/Death Grips - Klink.mp3";
+	private int Window_Width = 500;
+	private int Window_Height = 500;
+
 	private float[] bands;
 	private float[] smoothedBands;
 
@@ -61,6 +65,45 @@ public abstract class Visual extends PApplet
 		}
 		amplitude = total / ab.size();
 		smothedAmplitude = PApplet.lerp(smothedAmplitude, amplitude, 0.1f);
+	}
+
+
+	// Window Control Stuff
+	// Width
+	public int Get_Window_Width()
+	{
+		return Window_Width;
+	}
+	public void Set_Window_Width(int width)
+	{
+		Window_Width = width;
+	}
+	
+	// Height
+	public int Get_Window_Height()
+	{
+		return Window_Height;
+	}
+	public void Set_Window_Heigth(int height)
+	{
+		Window_Height = height;
+	}
+
+	// Both
+	public void Set_Window_Size(int size)
+	{
+		Window_Height = size;
+		Window_Width = size;
+	}
+	
+	// Song path
+	public String Get_Song_Path()
+	{
+		return song_path;
+	}
+	public void Set_Song_Path(String song_to_find)
+	{
+		song_path = song_to_find;
 	}
 
 
