@@ -17,7 +17,7 @@ public class CubeVisual extends Visual
     {
         if (key == ' ')
         {
-            getAudioPlayer().cue(0);
+            getAudioPlayer().cue(0); // Play from 0 miliseconds into the song.. from the start basically
             getAudioPlayer().play();
             
         }
@@ -31,12 +31,16 @@ public class CubeVisual extends Visual
     public void setup()
     {
         colorMode(HSB);
-        noCursor();
         
         setFrameSize(256);
 
         startMinim();
-        loadAudio("heroplanet.mp3");
+        loadAudio("Music/Death Grips - Beware.mp3");          // MP3 is OK
+        //loadAudio("Music/TEST FLAC - Chop Suey.flac");        // FLACs cant be played
+        //loadAudio("Music/TEST OGG - Death Grips Hacker.ogg"); // OGGs cant be played
+        //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK
+        
+        
         //getAp().play();
         //startListening(); 
         
