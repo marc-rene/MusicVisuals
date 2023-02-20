@@ -40,14 +40,7 @@ public class CubeVisual extends Visual
           
         startMinim();
         loadAudio(Get_Song_Path());          // MP3 is OK
-        //loadAudio("Music/TEST FLAC - Chop Suey.flac");        // FLACs cant be played
-        //loadAudio("Music/TEST OGG - Death Grips Hacker.ogg"); // OGGs cant be played
-        //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK
-        
-        
-        //getAp().play();
-        //startListening(); 
-        
+        //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK        
     }
 
     float smoothedBoxSize = 0;
@@ -59,7 +52,6 @@ public class CubeVisual extends Visual
         background(20);
         noFill();
         lights();
-        //stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
         perspective(
             1.5f, // field-of-view angle (in radians)
             (Get_Window_Width() / Get_Window_Height()), // aspect - ratio of width to height... Need to figure out how to update this when going fullscreen
@@ -80,11 +72,12 @@ public class CubeVisual extends Visual
             );
         
         translate(0, 0, 250);
-               
+            
         float boxSize = 50 + (getAmplitude() * Get_Window_Width() / 5); //map(average, 0, 1, 100, 400); 
         smoothedBoxSize = lerp(smoothedBoxSize, boxSize, 0.2f);        
         if (twocubes)
         {
+            background(smoothedBoxSize * 0.5f);
             // Box 1 X (going left and right)
             pushMatrix();
             translate((Tick_Tock * 100), -10, 0);
@@ -118,18 +111,18 @@ public class CubeVisual extends Visual
             // Custom Shape (Duck)
             pushMatrix();
             translate(0,-2000, 5000);
-            scale(150);
+            scale(smoothedBoxSize * 2);
+            rotateZ((smoothedBoxSize - 50) * (Tick_Tock * 0.01f) );
             rotateY(angle); 
-            
             shape(ducky);
-            
             popMatrix();
+
         }
         else
         {
-            //rotateY(angle);
-            //rotateX(angle);
-            rotateZ(angle);
+            rotateY(angle);
+            rotateX(angle);
+            //rotateZ(angle);
             //strokeWeight(1);
             //sphere(smoothedBoxSize/ 2);            
             strokeWeight( (Get_Window_Width() / 100) ); // If we have a small window, We want a small Stroke

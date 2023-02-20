@@ -16,7 +16,7 @@ public class Main
 		//Visual visualisor = new RotatingAudioBands();
 		
 		visualisor.Set_Window_Size(800);
-		visualisor.Set_Song_Path("Music/Death Grips - Spread Eagle Cross the Block.mp3");
+		visualisor.Set_Song_Path("Music/Death Grips - 5D.mp3");
         processing.core.PApplet.runSketch( a, visualisor);		
 	}
 
