@@ -2,11 +2,17 @@ package example;
 
 import ie.tudublin.Visual;
 import processing.core.PShape;
+import processing.opengl.PShader;
+
+
 
 public class CubeVisual extends Visual
 {
-    boolean twocubes = true;
+	boolean twocubes = true;
     PShape ducky;
+	PShader test_shader;
+	float total_time = 0;
+	float deltatime = 0;
 
     public void settings()
     {
@@ -37,8 +43,8 @@ public class CubeVisual extends Visual
         setFrameSize(256);
 
         ducky = loadShape("Shapes/Rubber_Ducky.obj" );
-          
-        startMinim();
+		
+		startMinim();
         loadAudio(Get_Song_Path());          // MP3 is OK
         //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK        
     }
@@ -48,6 +54,7 @@ public class CubeVisual extends Visual
 
     public void draw()  // Called every Frame
     {
+		deltatime = System.currentTimeMillis();
         calculateAverageAmplitude();
         background(20);
         noFill();
@@ -120,14 +127,20 @@ public class CubeVisual extends Visual
         }
         else
         {
-            rotateY(angle);
+			pushMatrix();
+            rotateY(angle * (smoothedBoxSize / 1000) );
             rotateX(angle);
             //rotateZ(angle);
             //strokeWeight(1);
             //sphere(smoothedBoxSize/ 2);            
             strokeWeight( (Get_Window_Width() / 100) ); // If we have a small window, We want a small Stroke
-            
-            box(smoothedBoxSize);
+            stroke(50,100,150);
+            box(50 + smoothedBoxSize * Tick_Tock);
+			
+            stroke(50,150, (100 + (50 * (Tick_Tock)) ) );
+			rotateY(-1 * (angle * (smoothedBoxSize / 100) ));
+			box(smoothedBoxSize * 3 * (Tick_Tock / 2) );
+			popMatrix();
         }
         
         
@@ -142,7 +155,8 @@ public class CubeVisual extends Visual
         { Tick_Tock -= 0.01f;}
         
         angle += 0.01f;
-        
+        deltatime = System.currentTimeMillis() - deltatime;
+		total_time += deltatime;
     }
 
     float angle = 0;
