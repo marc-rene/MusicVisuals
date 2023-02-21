@@ -4,11 +4,15 @@ import ie.tudublin.Visual;
 import processing.core.PShape;
 import processing.opengl.PShader;
 
+
+
 public class CubeVisual extends Visual
 {
 	boolean twocubes = true;
     PShape ducky;
 	PShader test_shader;
+	float total_time = 0;
+	float deltatime = 0;
 
     public void settings()
     {
@@ -39,8 +43,8 @@ public class CubeVisual extends Visual
         setFrameSize(256);
 
         ducky = loadShape("Shapes/Rubber_Ducky.obj" );
-		test_shader = loadShader("Shaders/test.glsl");
-        startMinim();
+		
+		startMinim();
         loadAudio(Get_Song_Path());          // MP3 is OK
         //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK        
     }
@@ -50,6 +54,7 @@ public class CubeVisual extends Visual
 
     public void draw()  // Called every Frame
     {
+		deltatime = System.currentTimeMillis();
         calculateAverageAmplitude();
         background(20);
         noFill();
@@ -112,7 +117,6 @@ public class CubeVisual extends Visual
             
             // Custom Shape (Duck)
             pushMatrix();
-			filter(test_shader);
             translate(0,-2000, 5000);
             scale(smoothedBoxSize * 2);
             rotateZ((smoothedBoxSize - 50) * (Tick_Tock * 0.01f) );
@@ -145,7 +149,8 @@ public class CubeVisual extends Visual
         { Tick_Tock -= 0.01f;}
         
         angle += 0.01f;
-        
+        deltatime = System.currentTimeMillis() - deltatime;
+		total_time += deltatime;
     }
 
     float angle = 0;
