@@ -127,14 +127,20 @@ public class CubeVisual extends Visual
         }
         else
         {
-            rotateY(angle);
+			pushMatrix();
+            rotateY(angle * (smoothedBoxSize / 1000) );
             rotateX(angle);
             //rotateZ(angle);
             //strokeWeight(1);
             //sphere(smoothedBoxSize/ 2);            
             strokeWeight( (Get_Window_Width() / 100) ); // If we have a small window, We want a small Stroke
-            
-            box(smoothedBoxSize);
+            stroke(50,100,150);
+            box(50 + smoothedBoxSize * Tick_Tock);
+			
+            stroke(50,150, (100 + (50 * (Tick_Tock)) ) );
+			rotateY(-1 * (angle * (smoothedBoxSize / 100) ));
+			box(smoothedBoxSize * 3 * (Tick_Tock / 2) );
+			popMatrix();
         }
         
         
