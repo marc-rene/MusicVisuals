@@ -2,11 +2,13 @@ package example;
 
 import ie.tudublin.Visual;
 import processing.core.PShape;
+import processing.opengl.PShader;
 
 public class CubeVisual extends Visual
 {
-    boolean twocubes = true;
+	boolean twocubes = true;
     PShape ducky;
+	PShader test_shader;
 
     public void settings()
     {
@@ -37,7 +39,7 @@ public class CubeVisual extends Visual
         setFrameSize(256);
 
         ducky = loadShape("Shapes/Rubber_Ducky.obj" );
-          
+		test_shader = loadShader("Shaders/test.glsl");
         startMinim();
         loadAudio(Get_Song_Path());          // MP3 is OK
         //loadAudio("Music/TEST WAV - PETETE.wav");             // WAV is OK        
@@ -110,6 +112,7 @@ public class CubeVisual extends Visual
             
             // Custom Shape (Duck)
             pushMatrix();
+			filter(test_shader);
             translate(0,-2000, 5000);
             scale(smoothedBoxSize * 2);
             rotateZ((smoothedBoxSize - 50) * (Tick_Tock * 0.01f) );
