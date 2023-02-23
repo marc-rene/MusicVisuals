@@ -1,8 +1,5 @@
 package Custom;
 
-import ie.tudublin.Visual;
-import processing.core.PApplet;
-
 
 public class Party_Manager
 {
