@@ -2,6 +2,7 @@ package ie.tudublin;
 
 import example.CubeVisual;
 import example.MyVisual;
+import Custom.Party_Manager;
 import example.RotatingAudioBands;
 
 public class Main
@@ -23,6 +24,8 @@ public class Main
 	public static void main(String[] args)
 	{
 		Main main = new Main();
+		Party_Manager party_Manager = new Party_Manager();
+		System.out.println(party_Manager.test());
 		main.startUI();			
 	}
 }
