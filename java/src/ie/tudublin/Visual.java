@@ -33,7 +33,9 @@ public abstract class Visual extends PApplet
 
 		fft = new FFT(frameSize, sampleRate);
 
-		bands = new float[(int) log2(frameSize)];
+		bands = new float[(int) (frameSize / 20)]; // The more than 15 means less bands, less than 15 means more bands... less bands, more performance
+		println("YOU GOT "+ bands.length + " BANDS");
+		
   		smoothedBands = new float[bands.length];
 
 	}

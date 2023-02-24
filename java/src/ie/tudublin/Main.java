@@ -1,23 +1,33 @@
 package ie.tudublin;
 
-import example.CubeVisual;
+import java.io.File;
+import java.util.Random;
+
+//import example.CubeVisual;
 import Custom.Party_Manager;
 //import example.MyVisual;
-//import example.RotatingAudioBands;
+import example.RotatingAudioBands;
 
 public class Main
 {	
 
 	public void startUI()
 	{
-		String[] a = {"MAIN"};
+		String[] a = {"Custom"};
 
-		Visual visualisor = new CubeVisual();
+		//Visual visualisor = new CubeVisual();
 		//Visual visualisor = new MyVisual();
-		//Visual visualisor = new RotatingAudioBands();
+		Visual visualisor = new RotatingAudioBands();
 		
 		visualisor.Set_Window_Size(800);
-		visualisor.Set_Song_Path("Music/Death Grips - 5D.mp3");
+		
+		// Choose a song at Random
+		File[] potential_songs = new File("data/Music/").listFiles();
+		Random random = new Random();
+		String chosen_song = "Music/" + potential_songs[random.nextInt(potential_songs.length)].getName();
+		System.out.println("Going to play " + chosen_song);
+		
+		visualisor.Set_Song_Path(chosen_song);
         processing.core.PApplet.runSketch( a, visualisor);		
 	}
 
