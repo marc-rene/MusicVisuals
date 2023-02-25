@@ -21,6 +21,7 @@ public abstract class Visual extends PApplet
 	private AudioPlayer ap;
 	private AudioBuffer ab;
 	private FFT fft;
+	private int bands_count;
 
 	private float amplitude  = 0;
 	private float smothedAmplitude = 0;
@@ -33,7 +34,7 @@ public abstract class Visual extends PApplet
 
 		fft = new FFT(frameSize, sampleRate);
 
-		bands = new float[(int) (frameSize / 20)]; // The more than 15 means less bands, less than 15 means more bands... less bands, more performance
+		bands = new float[get_bands_count()]; // The more than 15 means less bands, less than 15 means more bands... less bands, more performance
 		println("YOU GOT "+ bands.length + " BANDS");
 		
   		smoothedBands = new float[bands.length];
@@ -57,10 +58,22 @@ public abstract class Visual extends PApplet
 		}
 	}
 
-	
+	public int get_bands_count()
+	{
+		return bands.length;
+	}
+
+	public void set_bands_count(int total)
+	{
+		bands_count = total;
+		bands = new float[total];
+		smoothedBands = new float[bands.length];
+	}
+
 	public void calculateAverageAmplitude()
 	{
 		float total = 0;
+		
 		for(int i = 0 ; i < ab.size() ; i ++)
         {
 			total += abs(ab.get(i));
@@ -86,16 +99,20 @@ public abstract class Visual extends PApplet
 	{
 		return Window_Height;
 	}
-	public void Set_Window_Heigth(int height)
-	{
-		Window_Height = height;
-	}
 
 	// Both
-	public void Set_Window_Size(int size)
+	private void Set_Window_Size(int size)
 	{
-		Window_Height = size;
+		Window_Height = size; 
 		Window_Width = size;
+		//size(size,size);
+	}
+	
+	public void Set_Window_Size(int w, int h)
+	{
+		Window_Height = h;
+		Window_Width = w;
+		//size(w,h);
 	}
 	
 	// Song path

@@ -2,12 +2,20 @@ package example;
 
 import ie.tudublin.Visual;
 import ie.tudublin.VisualException;
+import processing.core.PFont;
+import processing.core.PGraphics;
 import processing.core.PShape;
+
 
 public class RotatingAudioBands extends Visual {
 
     PShape ducky;
+    PFont font;
+    PGraphics HUD;
     Boolean do_Spiral = false;
+    Boolean Ortho_Camera = false;
+    float adjust_back_and_forth = 1;
+    float fov = 70;
 
     public void settings()
     {
@@ -31,16 +39,51 @@ public class RotatingAudioBands extends Visual {
         {
             do_Spiral = false;
         }
- 
+        if (key == '3')
+        {
+            Ortho_Camera = false;
+        }
+        if (key == '4')
+        {
+            Ortho_Camera = true;
+        }
+        if (key == 'w')
+        {
+            adjust_back_and_forth -= 0.01f;
+            println(adjust_back_and_forth);
+        }
+        if (key == 's')
+        {
+            adjust_back_and_forth += 0.01f;
+            println(adjust_back_and_forth);
+        }
+        if (key == 'a')
+        {
+            fov -= 1f;
+            println(fov);
+        }
+        if (key == 'd')
+        {
+            fov += 1f;
+            println(fov);
+        }
     }
+
+    
 
     public void setup()
     {
         colorMode(HSB);
         
         setFrameSize(256);
-
+    
         ducky = loadShape("Shapes/Rubber_Ducky.obj" );
+        
+        //HUD = createGraphics(Get_Window_Width(), Get_Window_Height(), P2D);
+        font = createFont("Arial", 64);
+        textFont(font);
+        
+
 
         startMinim();
         loadAudio(Get_Song_Path());
@@ -62,6 +105,7 @@ public class RotatingAudioBands extends Visual {
 
     float Tick_Tock = 0;
     boolean increment = false;
+    float hud_alpha = 1250;
 
     public float clamp(float min, float max, float value)
     {
@@ -81,7 +125,11 @@ public class RotatingAudioBands extends Visual {
 
     public void draw()
     {
-        
+
+        if(keyPressed == true)
+        {
+            keyPressed();
+        }
         calculateAverageAmplitude();
         try
         {
@@ -92,32 +140,51 @@ public class RotatingAudioBands extends Visual {
             e.printStackTrace();
         }
         calculateFrequencyBands();
+        
         background(0);
+    
         stroke(255);
         lights();
         stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
        
-        float eyeY = lerp(-300, -800, abs(Tick_Tock));
-        float eyeZ = lerp(600, 800, abs(Tick_Tock));
+       
         
-        camera(0, eyeY, eyeZ, 0, 100, 0, 0, 1, 0);
+        
+
         //translate(0, 0, -250);
         
         rot += getAmplitude() / 8.0f;
         
         rotateY(rot);
         float[] bands = getSmoothedBands();
-        
+        int rings = 75;
+        float sensitivity = 0.02f;
         //Ducky
         pushMatrix();
-        translate(0,0,0);
         
-        rotateZ(PI);
+        if (Ortho_Camera)
+        {
+            rings = 15;
+            sensitivity = 1.4f;
+            radius = 450;
+            rotateZ(PI/2);
+            translate(0,-60,0);
+        }
+        else
+        {
+            rings = 75;
+            sensitivity = 0.02f;
+            radius = 150;
+            translate(0,0,0);
+            rotateZ(PI);
+        }
+
         rotateY(rot/1.2f );
         scale(4);
         shape(ducky);
         popMatrix();
         
+    
         //SPIRAL
         if (do_Spiral) {
             
@@ -128,13 +195,13 @@ public class RotatingAudioBands extends Visual {
                 x = sin(theta) * (radius/1.3f) ;
                 z = cos(theta) * (radius/1.3f) ;
 
-                for (int ring = 1; ring < 75; ring++) // 75 rings... overkill
+                for (int ring = 1; ring < rings; ring++) // 75 rings... overkill
                 {
                     fill(map(i, 0, bands.length, 0, 255), 200, 200, (255 / ring) );
                     stroke(map(i, 0, bands.length, 0, 255), 255, 255);
                     int max_size = 2000;
                     pushMatrix();
-                    Y_offset = clamp(-150, max_size, h * (h/(ring*0.02f)) );   // The 0.1f here is the sensitivity, lower number here means each ring will be more sensitive to sound
+                    Y_offset = clamp(-150, max_size, h * (h/(ring*sensitivity)) );   // sensitivity, lower number here means each ring will be more sensitive to sound
                     translate( x * (ring*0.4f), max_size + (-1 * Y_offset / 2) , z * (ring*0.4f) );
                     rotateY(theta);
                     box( (250 * ring) / getBands().length, Y_offset, 25);
@@ -150,7 +217,7 @@ public class RotatingAudioBands extends Visual {
             {
                 noFill();
                 theta = map(i, 0, bands.length, 0, TWO_PI);
-                h = clamp(1, 300, bands[i] / 5);
+                h = clamp(5, 300, bands[i] / 5);
                 x = (sin(theta) * radius) * clamp(1, 1.55f, (h/100) );
                 z = (cos(theta) * radius) * clamp(1, 1.55f, (h/100) );
                 stroke(map(i, 0, bands.length, 0, 255), 255, 255);
@@ -189,9 +256,50 @@ public class RotatingAudioBands extends Visual {
         { Tick_Tock += 0.01f;}
         else
         { Tick_Tock -= 0.01f;}
+        
 
         
+        float eyeY = lerp(-300, -800, abs(Tick_Tock)) * adjust_back_and_forth;
+        float eyeZ = lerp(600, 800, abs(Tick_Tock)) * adjust_back_and_forth; 
+
+        //camera stuff
+        if(!Ortho_Camera)
+        {   
+            perspective( (fov*0.0174533f) ,1,0.01f, 90000f); //we dealing with radians here
+            camera(0, eyeY, eyeZ, 0, 0, 0, 0, 1, 0); 
+        }
+        else
+        {
+            ortho(-1*1000*adjust_back_and_forth, 1000*adjust_back_and_forth, -1*1000*adjust_back_and_forth, 1000*adjust_back_and_forth, 0.01f, 90000);
+            camera(0, 1000, 0, 0, 0, 0, 0, 0, 1); 
+        }
+
+        
+        colorMode(RGB);
+        hint(DISABLE_DEPTH_TEST);
+        textAlign(CENTER);
+        textMode(MODEL);
+        translate(0,0,0);
+        rotateX(0 + (eyeZ/2000));
+        
+        fill(255,255,255, clamp(0, 255, hud_alpha));
+        text("W , S: control camera position", 0,0,255);
+        fill(255,255,255, clamp(0, 255, hud_alpha*2));
+        text("\nA , D: control camera FOV", 0,0,255);
+        fill(255,255,255, clamp(0, 255, hud_alpha*4));
+        text("\n\n1 , 2: Change Scenes", 0,0,255);
+        fill(255,255,255, clamp(0, 255, hud_alpha*8));
+        text("\n\n\n3 , 4: Change Perspective", 0,0,255);
+        
+        if (hud_alpha >= 0)
+        { 
+            hud_alpha  -= 1.5f;
+            print("\rHud Alpha : "+ hud_alpha);
+        }
+        hint(ENABLE_DEPTH_TEST);
+        colorMode(HSB);
+        
     }
-    float angle = 0;
+    
 
 }

@@ -15,12 +15,14 @@ public class Main
 	{
 		String[] a = {"Custom"};
 
+		// Im going to try set up a thing where different visualisors can be loaded up and ready to switch to... so far this will have to do
 		//Visual visualisor = new CubeVisual();
 		//Visual visualisor = new MyVisual();
 		Visual visualisor = new RotatingAudioBands();
 		
-		visualisor.Set_Window_Size(800);
-		
+		visualisor.Set_Window_Size(800,800);
+		visualisor.set_bands_count(20); // Anything more than 20 TANKS performance
+
 		// Choose a song at Random
 		File[] potential_songs = new File("data/Music/").listFiles();
 		Random random = new Random();
