@@ -50,22 +50,18 @@ public class RotatingAudioBands extends Visual {
         if (key == 'w')
         {
             adjust_back_and_forth -= 0.01f;
-            println(adjust_back_and_forth);
         }
         if (key == 's')
         {
             adjust_back_and_forth += 0.01f;
-            println(adjust_back_and_forth);
         }
         if (key == 'a')
         {
             fov -= 1f;
-            println(fov);
         }
         if (key == 'd')
         {
             fov += 1f;
-            println(fov);
         }
     }
 
@@ -294,8 +290,9 @@ public class RotatingAudioBands extends Visual {
         if (hud_alpha >= 0)
         { 
             hud_alpha  -= 1.5f;
-            print("\rHud Alpha : "+ hud_alpha);
         }
+        print(String.format("\rHud Alpha : %.2f \tFOV : %.2f \tB&F Amount : %.2f",  
+            hud_alpha, fov, adjust_back_and_forth));
         hint(ENABLE_DEPTH_TEST);
         colorMode(HSB);
         
