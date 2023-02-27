@@ -21,7 +21,7 @@ public abstract class Visual extends PApplet
 	private AudioPlayer ap;
 	private AudioBuffer ab;
 	private FFT fft;
-	private int bands_count;
+	//private int bands_count;
 
 	private float amplitude  = 0;
 	private float smothedAmplitude = 0;
@@ -65,7 +65,7 @@ public abstract class Visual extends PApplet
 
 	public void set_bands_count(int total)
 	{
-		bands_count = total;
+		//bands_count = total;
 		bands = new float[total];
 		smoothedBands = new float[bands.length];
 	}
@@ -101,12 +101,12 @@ public abstract class Visual extends PApplet
 	}
 
 	// Both
-	private void Set_Window_Size(int size)
-	{
-		Window_Height = size; 
-		Window_Width = size;
-		//size(size,size);
-	}
+	//private void Set_Window_Size(int size)
+	//{
+	//	Window_Height = size; 
+	//	Window_Width = size;
+	//	//size(size,size);
+	//}
 	
 	public void Set_Window_Size(int w, int h)
 	{

@@ -6,6 +6,12 @@ import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PShape;
 
+import java.sql.Struct;
+import java.util.Vector;
+
+import Custom.Mesh_Manager;
+
+
 
 public class RotatingAudioBands extends Visual {
 
@@ -15,7 +21,26 @@ public class RotatingAudioBands extends Visual {
     Boolean do_Spiral = false;
     Boolean Ortho_Camera = false;
     float adjust_back_and_forth = 1;
-    float fov = 70;
+    
+    // 3D Camera
+    float fov = 70; // field of view
+    float Camera_Right = 0; // Right-Left Movement
+    float Camera_Forward = 250; 
+    float Camera_Up = -300;
+    float Camera_Movement_Speed = 10f;
+    float Camera_Sensitivity = 10;
+    float Camera_R_X = 0; //Rotate Camera up and down (degrees)
+    float Camera_R_Y = 0; //Rotate Camera Left and right (degrees)
+    float Camera_x_direction; // which way is the camera facing? (Vector)
+    float Camera_y_direction;
+    float Camera_z_direction;
+    float Camera_focus_at_X;
+    float Camera_focus_at_Y;
+    float Camera_focus_at_Z;
+    boolean free_cam = false;
+    
+    
+
 
     public void settings()
     {
@@ -26,6 +51,12 @@ public class RotatingAudioBands extends Visual {
 
     public void keyPressed()
     {
+        // --- Keycodes ---
+        // Down arrow   : 40
+        // Right arrow  : 39
+        // Up arrow     : 38
+        // Left arrow   : 37
+        
         if (key == ' ')
         {
             getAudioPlayer().cue(0);
@@ -47,21 +78,76 @@ public class RotatingAudioBands extends Visual {
         {
             Ortho_Camera = true;
         }
+
+        // Movement Control
         if (key == 'w')
         {
-            adjust_back_and_forth -= 0.01f;
-        }
-        if (key == 's')
-        {
-            adjust_back_and_forth += 0.01f;
+            Camera_Forward -= Camera_Movement_Speed;
         }
         if (key == 'a')
         {
-            fov -= 1f;
+            Camera_Right -= Camera_Movement_Speed;
+        }
+        if (key == 's')
+        {
+            Camera_Forward += Camera_Movement_Speed;
         }
         if (key == 'd')
         {
-            fov += 1f;
+            Camera_Right += Camera_Movement_Speed;
+        }
+        if (key == 'e')
+        {
+            Camera_Up += Camera_Movement_Speed;
+        }
+        if (key == 'q')
+        {
+            Camera_Up -= Camera_Movement_Speed;
+        }
+        if (key == 'f')
+        {            
+            free_cam = false;
+            println("\nDisabled Free Cam, focused on centre now\n");
+        }
+        if (key == 'g')   
+        {
+            free_cam = true;
+            println("\nEnabled Free Cam!\n");
+        }
+
+        // Fov control
+        if (key == 'z')
+        {
+            fov = clamp(1, 175, fov - 0.3f);
+        }
+        if (key == 'x')
+        {
+            fov = clamp(1, 175, fov + 0.3f);
+        }
+
+        // Camera Rotate Control
+        if (keyCode == 37) // Left arrow, rotate camera left
+        {
+            Camera_R_Y = loop_value(0,360, (Camera_R_Y - 0.1f * Camera_Sensitivity) );
+        }
+        if (keyCode == 39) // Right arrow, rotate camera right
+        {
+            Camera_R_Y = loop_value(0,360, (Camera_R_Y + 0.1f * Camera_Sensitivity) );
+        }
+        if (keyCode == 38) // Up arrow, rotate camera up
+        {
+            Camera_R_X = loop_value(0,360, (Camera_R_X + 0.1f * Camera_Sensitivity) );
+        }
+        if (keyCode == 40 ) // Down arrow, rotate camera down
+        {
+            Camera_R_X = loop_value(0,360, (Camera_R_X - 0.1f * Camera_Sensitivity) );
+
+        }
+
+        if (key == 'o')
+        {
+            Mesh_Manager test = new Mesh_Manager();
+            println("\n" + test.Find_File() );
         }
     }
 
@@ -71,9 +157,9 @@ public class RotatingAudioBands extends Visual {
     {
         colorMode(HSB);
         
-        setFrameSize(256);
+        setFrameSize(1024); 
     
-        ducky = loadShape("Shapes/Rubber_Ducky.obj" );
+        ducky = loadShape("C:/TUD/OneDrive - Technological University Dublin/Documents/College/Year 2/OOP/Project/MusicVisuals/java/data/Shapes/Rubber_Ducky.obj" );
         
         //HUD = createGraphics(Get_Window_Width(), Get_Window_Height(), P2D);
         font = createFont("Arial", 64);
@@ -85,7 +171,7 @@ public class RotatingAudioBands extends Visual {
         loadAudio(Get_Song_Path());
         //getAudioPlayer().play();
         //startListening(); 
-        
+       
     }
     
     float radius = 150;
@@ -103,7 +189,7 @@ public class RotatingAudioBands extends Visual {
     boolean increment = false;
     float hud_alpha = 1250;
 
-    public float clamp(float min, float max, float value)
+    private float clamp(float min, float max, float value)
     {
         if (value > max)
         {
@@ -117,6 +203,34 @@ public class RotatingAudioBands extends Visual {
         {
             return value;
         }
+    }
+
+
+    private float loop_value(float min, float max, float value) // Sorry This sucks... please make a better one if you guys can? - Cesar
+    {
+        if (value < min)
+        {
+            float difference = min - value;
+            return max - difference;
+        }
+        else if (value >= max)
+        {
+            float difference = value - max;
+            return min + difference;
+        }
+        return value;
+    }
+
+    
+    
+    private float toDegrees(float rad)
+    {
+        return (rad * 57.2958f);
+    }
+
+    private float toRad(float degree)
+    {
+        return 0.01745f * degree;
     }
 
     public void draw()
@@ -158,6 +272,7 @@ public class RotatingAudioBands extends Visual {
         //Ducky
         pushMatrix();
         
+        // Are we in a 3D or 2D camera?
         if (Ortho_Camera)
         {
             rings = 15;
@@ -169,7 +284,7 @@ public class RotatingAudioBands extends Visual {
         else
         {
             rings = 75;
-            sensitivity = 0.02f;
+            sensitivity = 0.25f;
             radius = 150;
             translate(0,0,0);
             rotateZ(PI);
@@ -255,14 +370,32 @@ public class RotatingAudioBands extends Visual {
         
 
         
-        float eyeY = lerp(-300, -800, abs(Tick_Tock)) * adjust_back_and_forth;
-        float eyeZ = lerp(600, 800, abs(Tick_Tock)) * adjust_back_and_forth; 
-
+        
+        
         //camera stuff
         if(!Ortho_Camera)
         {   
             perspective( (fov*0.0174533f) ,1,0.01f, 90000f); //we dealing with radians here
-            camera(0, eyeY, eyeZ, 0, 0, 0, 0, 1, 0); 
+            
+            if (free_cam == true)
+            {
+                Camera_x_direction = cos(toRad(Camera_R_Y) );
+                Camera_y_direction = sin(toRad(Camera_R_Y) );
+                Camera_z_direction = cos(toRad(Camera_R_X) );
+                Camera_focus_at_X = Camera_Right + Camera_x_direction;
+                Camera_focus_at_Y = Camera_Up + Camera_y_direction;
+                Camera_focus_at_Z = Camera_Forward + Camera_z_direction;
+            }
+            else
+            {
+                Camera_focus_at_X = 0;
+                Camera_focus_at_Y = 0;
+                Camera_focus_at_Z = 0;
+            }
+            camera( Camera_Right, Camera_Up, Camera_Forward, 
+                    Camera_focus_at_X, Camera_focus_at_Y, Camera_focus_at_Z,
+                    0, 1, 0 // Axis
+                    ); 
         }
         else
         {
@@ -276,7 +409,7 @@ public class RotatingAudioBands extends Visual {
         textAlign(CENTER);
         textMode(MODEL);
         translate(0,0,0);
-        rotateX(0 + (eyeZ/2000));
+        rotateX(PI);
         
         fill(255,255,255, clamp(0, 255, hud_alpha));
         text("W , S: control camera position", 0,0,255);
@@ -291,8 +424,8 @@ public class RotatingAudioBands extends Visual {
         { 
             hud_alpha  -= 1.5f;
         }
-        print(String.format("\rHud Alpha : %.2f \tFOV : %.2f \tB&F Amount : %.2f",  
-            hud_alpha, fov, adjust_back_and_forth));
+        print(String.format("\rHud Alpha : %.2f \tFOV : %.2f\t X : %.2f \t Y : %.2f \t Z : %.2f \t Left/Right Rotation : %.2f \t Up/Down Rotation : %.2f \t Camera X: %.2f \tY: %.2f \tZ: %.2f" , 
+            hud_alpha, fov, Camera_Right, Camera_Up, Camera_Forward, Camera_R_Y, Camera_R_X, Camera_x_direction, Camera_y_direction, Camera_z_direction));
         hint(ENABLE_DEPTH_TEST);
         colorMode(HSB);
         
