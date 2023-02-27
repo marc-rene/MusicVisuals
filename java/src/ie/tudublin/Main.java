@@ -20,7 +20,7 @@ public class Main
 		//Visual visualisor = new MyVisual();
 		Visual visualisor = new RotatingAudioBands();
 		
-		visualisor.Set_Window_Size(800,800);
+		visualisor.Set_Window_Size(1000,1000);
 		visualisor.set_bands_count(20); // Anything more than 20 TANKS performance
 
 		// Choose a song at Random

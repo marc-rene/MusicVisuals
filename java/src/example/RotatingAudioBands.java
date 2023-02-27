@@ -6,9 +6,6 @@ import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PShape;
 
-import java.sql.Struct;
-import java.util.Vector;
-
 import Custom.Mesh_Manager;
 
 
@@ -25,9 +22,9 @@ public class RotatingAudioBands extends Visual {
     // 3D Camera
     float fov = 70; // field of view
     float Camera_Right = 0; // Right-Left Movement
-    float Camera_Forward = 250; 
+    float Camera_Forward = 1000; 
     float Camera_Up = -300;
-    float Camera_Movement_Speed = 10f;
+    float Camera_Movement_Speed;
     float Camera_Sensitivity = 10;
     float Camera_R_X = 0; //Rotate Camera up and down (degrees)
     float Camera_R_Y = 0; //Rotate Camera Left and right (degrees)
@@ -73,10 +70,12 @@ public class RotatingAudioBands extends Visual {
         if (key == '3')
         {
             Ortho_Camera = false;
+            Camera_Up = -300;
         }
         if (key == '4')
         {
             Ortho_Camera = true;
+            Camera_Up = 10;
         }
 
         // Movement Control
@@ -187,7 +186,7 @@ public class RotatingAudioBands extends Visual {
 
     float Tick_Tock = 0;
     boolean increment = false;
-    float hud_alpha = 1250;
+    float hud_alpha = 1750;
 
     private float clamp(float min, float max, float value)
     {
@@ -277,6 +276,8 @@ public class RotatingAudioBands extends Visual {
         {
             rings = 15;
             sensitivity = 1.4f;
+            Camera_Movement_Speed = 0.05f;
+            
             radius = 450;
             rotateZ(PI/2);
             translate(0,-60,0);
@@ -284,7 +285,8 @@ public class RotatingAudioBands extends Visual {
         else
         {
             rings = 75;
-            sensitivity = 0.25f;
+            sensitivity = 0.05f;
+            Camera_Movement_Speed = 10f;
             radius = 150;
             translate(0,0,0);
             rotateZ(PI);
@@ -386,7 +388,7 @@ public class RotatingAudioBands extends Visual {
                 Camera_focus_at_Y = Camera_Up + Camera_y_direction;
                 Camera_focus_at_Z = Camera_Forward + Camera_z_direction;
             }
-            else
+            else // look at the centre of the scene
             {
                 Camera_focus_at_X = 0;
                 Camera_focus_at_Y = 0;
@@ -399,26 +401,30 @@ public class RotatingAudioBands extends Visual {
         }
         else
         {
-            ortho(-1*1000*adjust_back_and_forth, 1000*adjust_back_and_forth, -1*1000*adjust_back_and_forth, 1000*adjust_back_and_forth, 0.01f, 90000);
+            ortho(-1*100*Camera_Up, 100*Camera_Up, -1*100*Camera_Up, 100*Camera_Up, 0.01f, 90000);
             camera(0, 1000, 0, 0, 0, 0, 0, 0, 1); 
         }
 
         
         colorMode(RGB);
         hint(DISABLE_DEPTH_TEST);
-        textAlign(CENTER);
         textMode(MODEL);
         translate(0,0,0);
-        rotateX(PI);
+        textAlign(CENTER);
+        //rotateX(PI);
         
         fill(255,255,255, clamp(0, 255, hud_alpha));
-        text("W , S: control camera position", 0,0,255);
+        text("E  W  Q ", -350,0,255);
+        text("\nA S D : control camera position", 0,0,255);
+
         fill(255,255,255, clamp(0, 255, hud_alpha*2));
-        text("\nA , D: control camera FOV", 0,0,255);
+        text("\n\nZ, X: control camera FOV", 0,0,255);
+        
         fill(255,255,255, clamp(0, 255, hud_alpha*4));
-        text("\n\n1 , 2: Change Scenes", 0,0,255);
+        text("\n\n\n1, 2: Change Scenes", 0,0,255);
+        
         fill(255,255,255, clamp(0, 255, hud_alpha*8));
-        text("\n\n\n3 , 4: Change Perspective", 0,0,255);
+        text("\n\n\n\n3, 4: Change Perspective", 0,0,255);
         
         if (hud_alpha >= 0)
         { 
