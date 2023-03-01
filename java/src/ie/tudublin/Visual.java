@@ -9,9 +9,10 @@ public abstract class Visual extends PApplet
 	private int frameSize = 512;
 	private int sampleRate = 44100;
 
-	private String song_path = "Music/Death Grips - Klink.mp3";
-	private int Window_Width = 500;
-	private int Window_Height = 500;
+	private String song_path = "Music/Death Grips - Klink.mp3"; // If no song is ever set... play Klink by default
+	// Default Window sizes
+	private int Window_Width = 400;
+	private int Window_Height = 400;
 
 	private float[] bands;
 	private float[] smoothedBands;
@@ -89,30 +90,17 @@ public abstract class Visual extends PApplet
 	{
 		return Window_Width;
 	}
-	public void Set_Window_Width(int width)
-	{
-		Window_Width = width;
-	}
 	
 	// Height
 	public int Get_Window_Height()
 	{
 		return Window_Height;
 	}
-
-	// Both
-	//private void Set_Window_Size(int size)
-	//{
-	//	Window_Height = size; 
-	//	Window_Width = size;
-	//	//size(size,size);
-	//}
 	
 	public void Set_Window_Size(int w, int h)
 	{
 		Window_Height = h;
 		Window_Width = w;
-		//size(w,h);
 	}
 	
 	// Song path

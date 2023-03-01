@@ -1,6 +1,7 @@
 package Custom;
 
 
+// Will expand this later
 public class Party_Manager
 {
     public Party_Manager()
