@@ -290,8 +290,8 @@ public class RotatingAudioBands extends Visual {
         }
         else // 3D Camera
         {
-            rings = 75; // More rings... Laptop cant render 99999 rings sadly
-            sensitivity = 0.05f; // every ring should be more sensitive, because we have more rings... looks cooler i think? Tweak and see what yee think
+            rings = 150; // More rings... Laptop cant render 99999 rings sadly
+            sensitivity = 1f; // every ring should be more sensitive, because we have more rings... looks cooler i think? Tweak and see what yee think
             Camera_Movement_Speed = 10f;
             radius = 150;
             translate(0,0,0);
@@ -440,7 +440,7 @@ public class RotatingAudioBands extends Visual {
         }
 
         // For debugging... life saver
-        print(String.format("\rHud Alpha : %.2f \tFOV : %.2f\t X : %.2f \t Y : %.2f \t Z : %.2f \t Left/Right Rotation : %.2f \t Up/Down Rotation : %.2f \t Camera X: %.2f \tY: %.2f \tZ: %.2f" , 
+        print(String.format("\rHud Alpha : %.2f \tFOV : %.2f\t X : %.2f \t Y : %.2f \t Z : %.2f \t Left/Right Rotation : %.2f \t Up/Down Rotation : %.2f \t Camera X: %.2f \tY: %.2f \tZ: %.2f\r", 
             hud_alpha, fov, Camera_Right, Camera_Up, Camera_Forward, Camera_R_Y, Camera_R_X, Camera_x_direction, Camera_y_direction, Camera_z_direction));
             
         hint(ENABLE_DEPTH_TEST); // STOP rendering on top of everything
