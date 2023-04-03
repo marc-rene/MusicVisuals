@@ -1,7 +1,7 @@
 @echo off
 echo:
 echo |set /p="Compiling Stuff..."
-javac -classpath "./;./lib/minim.jar;./lib/core.jar" -d bin src/ie/tudublin/*.java src/example/*.java 
+javac -classpath "./;./lib/minim.jar;./lib/core.jar" -d bin src/ie/tudublin/*.java src/example/*.java src/Cesar_C21415142/*.java src/Liam_C21447352/*.java src/Oisin_C21501436/*.java src/Stephen_C21394693/*.java    
 echo  DONE! :D
 
 echo |set /p="Now We're Running Java!"
