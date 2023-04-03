@@ -1,8 +1,10 @@
 package ie.tudublin;
 
-import example.CubeVisual;
-import example.MyVisual;
-import example.RotatingAudioBands;
+import Cesar_C21415142.*;
+import Liam_C21447352.*;
+import Oisin_C21501436.*;
+import Stephen_C21394693.*;
+import example.*;
 
 public class Main
 {	
