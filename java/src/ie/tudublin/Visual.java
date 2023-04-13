@@ -24,6 +24,8 @@ public abstract class Visual extends PApplet
 	private FFT fft;
 	//private int bands_count;
 
+	private String song_path = "";
+
 	private float amplitude  = 0;
 	private float smothedAmplitude = 0;
 
